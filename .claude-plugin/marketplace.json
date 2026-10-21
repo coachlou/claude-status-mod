@@ -1,0 +1,7 @@
+{
+  "name": "local-mods",
+  "owner": { "name": "loudalo" },
+  "plugins": [
+    { "name": "git-branch-band", "source": "./", "description": "Shows the current git branch or worktree name above the prompt" }
+  ]
+}
