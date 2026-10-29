@@ -1,4 +1,4 @@
-export type GitInfo = { branch: string; worktree: string | null }
+export type GitInfo = { branch: string; worktree: string | null; folder: string }
 
 declare module 'claude-code' {
   interface PluginState {
