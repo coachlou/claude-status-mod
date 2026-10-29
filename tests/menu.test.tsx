@@ -12,7 +12,8 @@ test('menu icon after the branch opens the sample menu; a pick toasts and closes
   const props = { hasSurvey: false, isWorking: false, maxRows: 6, bodyColumns: 120, scroll: { offset: 0, bodyRows: 6 }, view: {} }
   const ui = await $.ui.mount({ plugin: 'git-branch-band', surface: 'desktop', component: 'AbovePrompt', props })
   await $.session.start({ cwd: '/r', surface: 'desktop', isInteractive: true })
-  expect(await ui.find({ text: /⎇ main/ })).toBeDefined()
+  expect(await ui.find({ type: 'Svg' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /^main$/ })).toBeDefined()
   expect(await ui.find({ key: 'git-menu:.aai init' })).toBeUndefined()
 
   await ui.press({ key: 'git-menu' })
@@ -22,5 +23,21 @@ test('menu icon after the branch opens the sample menu; a pick toasts and closes
   await ui.press({ key: 'git-menu:pull' })
   expect(toasts).toEqual(['Would run: pull'])
   expect(await ui.find({ key: 'git-menu:pull' })).toBeUndefined()
+  await ui.unmount()
+})
+
+test('terminal draws glyphs; a linked worktree shows its own name beside the branch', async ($, on) => {
+  on('session.root', () => ({ value: '/w/feat' }))
+  on('process.run', () => ({ value: { exitCode: 0, stdout: '/w/feat\n/r/.git/worktrees/feat\n/r/.git\nfeat-x\n', stderr: '' } }))
+  on('session.start', (_$, e) => ({ cwd: e.cwd }))
+  on('ui.render', ($, e) => { const { Box } = $.ui.resolve(e); return <Box /> })
+
+  const props = { hasSurvey: false, isWorking: false, maxRows: 6, bodyColumns: 120, scroll: { offset: 0, bodyRows: 6 }, view: {} }
+  const ui = await $.ui.mount({ plugin: 'git-branch-band', surface: 'terminal', component: 'AbovePrompt', props })
+  await $.session.start({ cwd: '/w/feat', surface: 'terminal', isInteractive: true })
+  expect(await ui.find({ type: 'Text', text: /⎇/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /^feat-x$/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /⌥/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /^feat$/ })).toBeDefined()
   await ui.unmount()
 })

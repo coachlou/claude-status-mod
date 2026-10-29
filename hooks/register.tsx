@@ -7,6 +7,10 @@ const info = atom({ plugin: 'git-branch-band', key: 'info' } as const, null)
 const menuOpen = atom({ plugin: 'git-branch-band', key: 'menuOpen' } as const, false)
 
 // ponytail: sample menu, each item only toasts; wire real actions when the layout is settled
+// Lucide git-branch / git-fork; stroke hard-coded because Svg draws isolated and never sees the theme's currentColor
+const BRANCH_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>'
+const WORKTREE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"/><path d="M12 12v3"/></svg>'
+
 const MENU = ['status', 'pull', 'push', 'commit', 'diff', 'log', 'switch', 'stash', '.aai init', 'dev scaffold']
 
 // ponytail: refreshed at session start and after each turn, not polled; a checkout typed in another terminal shows after the next turn
@@ -48,7 +52,11 @@ export const register: Register = on => {
 
     // the band holds one tree: draw ours above whatever the plugins beneath (cache-keeper) drew
     const below = await next(e).catch(() => null)
-    const { Box, Text, Button } = $.ui.resolve(e)
+    const els = $.ui.resolve(e)
+    const { Box, Text, Button } = els
+    // the terminal has no Svg element (its table still answers the key), so it gets a glyph
+    const icon = (svg: string, glyph: string, alt: string) =>
+      e.surface !== 'terminal' && 'Svg' in els ? <els.Svg source={svg} alt={alt} width={14} height={14} /> : <Text dimColor>{glyph} </Text>
     const isOpen = await read($, menuOpen)
     const pick = async (item: string) => {
       await update($, menuOpen, () => false)
@@ -57,11 +65,16 @@ export const register: Register = on => {
     return (
       <Box flexDirection="column">
         <Box>
-          <Text dimColor>
-            ⎇ {git.branch}
-            {git.worktree && git.worktree !== git.branch ? `  ·  worktree: ${git.worktree}` : ''}
-            {'  '}
-          </Text>
+          {icon(BRANCH_SVG, '⎇', 'branch')}
+          <Text dimColor>{git.branch}</Text>
+          {git.worktree ? (
+            <>
+              <Text>{'  '}</Text>
+              {icon(WORKTREE_SVG, '⌥', 'worktree')}
+              <Text dimColor>{git.worktree}</Text>
+            </>
+          ) : null}
+          <Text>{'  '}</Text>
           <Button key="git-menu" label={isOpen ? '▾' : '⋯'} onPress={() => void update($, menuOpen, o => !o)} />
         </Box>
         {isOpen ? (
