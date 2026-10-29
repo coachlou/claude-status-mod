@@ -1,0 +1,1 @@
+{ "name": "notetaker", "version": "0.3.2", "description": "Live notetaker: keeps a cleaned-up, durable markdown record of the conversation, per chat or one thread across chats, plus a distilled insights file for AIMM teaching, watchable in a side pane (/notes).", "author": { "name": "Lou" }, "types": "./types/index.d.ts" }

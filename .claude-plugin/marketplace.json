@@ -1,7 +1,23 @@
 {
   "name": "local-mods",
-  "owner": { "name": "loudalo" },
+  "owner": {
+    "name": "loudalo"
+  },
   "plugins": [
-    { "name": "git-branch-band", "source": "./", "description": "Shows the current git branch or worktree name above the prompt" }
+    {
+      "name": "git-branch-band",
+      "source": "./",
+      "description": "Shows the current git branch or worktree name above the prompt"
+    },
+    {
+      "name": "cache-keeper",
+      "source": "./cache-keeper",
+      "description": "Strip above the prompt: a ⋯ picker of sample git items, elapsed time, prompt-cache countdown, context size, 5h and weekly usage, and an always-shown Handoff picker (& Clear, or to a new linked chat on desktop)."
+    },
+    {
+      "name": "notetaker",
+      "source": "./notetaker",
+      "description": "Live notetaker: keeps a cleaned-up, durable markdown record of the conversation, per chat or one thread across chats, plus a distilled insights file for AIMM teaching, watchable in a side pane (/notes)."
+    }
   ]
 }

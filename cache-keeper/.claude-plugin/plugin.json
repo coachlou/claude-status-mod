@@ -1,0 +1,14 @@
+{
+  "name": "cache-keeper",
+  "version": "0.11.0",
+  "description": "Strip above the prompt: a ⋯ picker of sample git items, elapsed time, prompt-cache countdown, context size, 5h and weekly usage, and an always-shown Handoff picker (& Clear, or to a new linked chat on desktop).",
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "cacheMinutes": {
+      "type": "number",
+      "default": 60,
+      "description": "Prompt-cache window in minutes, used until the engine reports the real TTL.",
+      "title": "Cache window (minutes)"
+    }
+  }
+}
